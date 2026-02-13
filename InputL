@@ -1,1 +1,15 @@
+local id = _G.SavedID
+if id then
+    task.spawn(function()
+        local success, model = pcall(function()
+            return game:GetObjects("rbxassetid://" .. id)[1]
+        end)
+        if success and model then
+            local char = game.Players.LocalPlayer.Character
+            if char then
+                model.Parent = char
+            end
+        end
+    end)
+end
 
