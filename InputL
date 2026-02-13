@@ -1,17 +1,28 @@
 local id = tonumber(_G.SavedID)
-if id then
-    task.spawn(function()
-        local success, objects = pcall(function()
-            return game:GetObjects("rbxassetid://" .. id)
-        end)
-        if success and objects and objects[1] then
-            local model = objects[1]
-            local char = game.Players.LocalPlayer.Character
-            if char then
-                model.Parent = char
-                -- Если это аксессуар, его нужно кинуть в персонажа
-                -- Если это просто модель, её нужно прикрепить
-            end
+if not id then return end
+
+local player = game.Players.LocalPlayer
+local char = player.Character
+if not char then return end
+
+local success, result = pcall(function()
+    return game:GetObjects("rbxassetid://" .. id)
+end)
+
+if success and result and result[1] then
+    local obj = result[1]
+    
+    if obj:IsA("Accessory") or obj:IsA("Hat") then
+        obj.Parent = char
+    elseif obj:IsA("Model") then
+        obj.Parent = char
+        -- Если у модели есть PrimaryPart, можно двинуть её к игроку
+        if obj.PrimaryPart then
+            obj:SetPrimaryPartCFrame(char.HumanoidRootPart.CFrame)
         end
-    end)
+    else
+        obj.Parent = char
+    end
+else
+    warn("Ошибка загрузки ID: " .. tostring(id))
 end
