@@ -1,17 +1,30 @@
+print("Грибабас: Код с GitHub запущен")
 local id = _G.SavedID
-if not id then return end
+
+if not id then 
+    warn("Грибабас: ID пустой, проверь ввод!")
+    return 
+end
 
 local char = game.Players.LocalPlayer.Character
-if not char then return end
+if not char then 
+    warn("Грибабас: Персонаж не найден!")
+    return 
+end
 
 local success, objects = pcall(function()
     return game:GetObjects("rbxassetid://" .. id)
 end)
 
 if success and objects and objects[1] then
+    print("Грибабас: Объект успешно скачан из Roblox API")
     local obj = objects[1]
     obj.Parent = char
+    
     if obj:IsA("Model") and obj.PrimaryPart then
         obj:SetPrimaryPartCFrame(char.HumanoidRootPart.CFrame)
     end
+    print("Грибабас: Объект перемещен в персонажа")
+else
+    warn("Грибабас: Ошибка загрузки ID " .. tostring(id) .. ". Возможно, ассет удален или запрещен.")
 end
