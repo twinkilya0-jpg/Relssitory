@@ -1,28 +1,30 @@
-local id = tonumber(_G.SavedID)
-if not id then return end
+local id = _G.SavedID
+if not id then 
+    warn("Грибабас: ID не найден в _G.SavedID")
+    return 
+end
 
-local player = game.Players.LocalPlayer
-local char = player.Character
+local char = game.Players.LocalPlayer.Character
 if not char then return end
 
-local success, result = pcall(function()
+local success, objects = pcall(function()
     return game:GetObjects("rbxassetid://" .. id)
 end)
 
-if success and result and result[1] then
-    local obj = result[1]
-    
-    if obj:IsA("Accessory") or obj:IsA("Hat") then
-        obj.Parent = char
-    elseif obj:IsA("Model") then
-        obj.Parent = char
-        -- Если у модели есть PrimaryPart, можно двинуть её к игроку
-        if obj.PrimaryPart then
-            obj:SetPrimaryPartCFrame(char.HumanoidRootPart.CFrame)
+if success and objects and #objects > 0 then
+    for _, obj in ipairs(objects) do
+        if obj:IsA("Accessory") or obj:IsA("Hat") then
+            obj.Parent = char
+        elseif obj:IsA("Model") then
+            obj.Parent = char
+            if obj.PrimaryPart then
+                obj:SetPrimaryPartCFrame(char.HumanoidRootPart.CFrame)
+            end
+        else
+            obj.Parent = char
         end
-    else
-        obj.Parent = char
     end
+    print("Грибабас: Объект " .. id .. " успешно загружен!")
 else
-    warn("Ошибка загрузки ID: " .. tostring(id))
+    warn("Грибабас: Не удалось загрузить ID " .. id .. ". Ошибка: " .. tostring(objects))
 end
