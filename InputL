@@ -1,15 +1,17 @@
-local id = _G.SavedID
+local id = tonumber(_G.SavedID)
 if id then
     task.spawn(function()
-        local success, model = pcall(function()
-            return game:GetObjects("rbxassetid://" .. id)[1]
+        local success, objects = pcall(function()
+            return game:GetObjects("rbxassetid://" .. id)
         end)
-        if success and model then
+        if success and objects and objects[1] then
+            local model = objects[1]
             local char = game.Players.LocalPlayer.Character
             if char then
                 model.Parent = char
+                -- Если это аксессуар, его нужно кинуть в персонажа
+                -- Если это просто модель, её нужно прикрепить
             end
         end
     end)
 end
-
