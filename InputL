@@ -1,30 +1,68 @@
-print("Грибабас: Код с GitHub запущен")
-local id = _G.SavedID
+local p = game.Players.LocalPlayer
+local assetId = _G.SavedID
 
-if not id then 
-    warn("Грибабас: ID пустой, проверь ввод!")
-    return 
-end
+local function l(a, _)
+    local b = Instance.new("Weld")
+    b.Part0 = a.Parent
+    b.Part1 = _.Parent
+    b.C0 = a.CFrame
+    b.C1 = _.CFrame
+    b.Parent = a.Parent
+[span_3](start_span)end[span_3](end_span)
 
-local char = game.Players.LocalPlayer.Character
-if not char then 
-    warn("Грибабас: Персонаж не найден!")
-    return 
-end
+local function _weld(_, a, b, d, c, e)
+    local f = Instance.new("Weld")
+    f.Name = _
+    f.Part0 = b
+    f.Part1 = d
+    f.C0 = c
+    f.C1 = e
+    f.Parent = a
+[span_4](start_span)end[span_4](end_span)
 
-local success, objects = pcall(function()
-    return game:GetObjects("rbxassetid://" .. id)
-end)
-
-if success and objects and objects[1] then
-    print("Грибабас: Объект успешно скачан из Roblox API")
-    local obj = objects[1]
-    obj.Parent = char
-    
-    if obj:IsA("Model") and obj.PrimaryPart then
-        obj:SetPrimaryPartCFrame(char.HumanoidRootPart.CFrame)
+local function findAtt(_, b)
+    for _, obj in pairs(_:GetChildren()) do
+        if obj:IsA("Attachment") and obj.Name == b then
+            return obj
+        elseif not obj:IsA("Accoutrement") and not obj:IsA("Tool") then
+            local res = findAtt(obj, b)
+            if res then return res end
+        end
     end
-    print("Грибабас: Объект перемещен в персонажа")
-else
-    warn("Грибабас: Ошибка загрузки ID " .. tostring(id) .. ". Возможно, ассет удален или запрещен.")
-end
+[span_5](start_span)end[span_5](end_span)
+
+local function k(e, c)
+    c.Parent = e
+    local d = c:FindFirstChild("Handle")
+    if d then
+        local b = d:FindFirstChildOfClass("Attachment")
+        if b then
+            local att = findAtt(e, b.Name)
+            if att then l(att, b) end
+        else
+            local head = e:FindFirstChild("Head")
+            if head then
+                _weld("HeadWeld", head, head, d, CFrame.new(0, 0, 0), c.AttachmentPoint)
+            end
+        end
+    end
+[span_6](start_span)end[span_6](end_span)
+
+task.spawn(function()
+    while true do
+        local char = p.Character
+        if char and char:FindFirstChild("HumanoidRootPart") then
+            -- Проверка по уникальному имени, чтобы не спавнить копии
+            if not char:FindFirstChild("GribItem_" .. tostring(assetId)) then
+                local success, model = pcall(function()
+                    return game:GetObjects("rbxassetid://" .. assetId)[1]
+                end)
+                if success and model then
+                    model.Name = "GribItem_" .. tostring(assetId)
+                    k(char, model)
+                end
+            end
+        end
+        [span_7](start_span)task.wait(2.5) -- Проверка каждые 2.5 секунды[span_7](end_span)
+    end
+end)
