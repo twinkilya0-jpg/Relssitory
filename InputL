@@ -8,7 +8,7 @@ local function l(a, _)
     b.C0 = a.CFrame
     b.C1 = _.CFrame
     b.Parent = a.Parent
-[span_3](start_span)end[span_3](end_span)
+end
 
 local function _weld(_, a, b, d, c, e)
     local f = Instance.new("Weld")
@@ -18,7 +18,7 @@ local function _weld(_, a, b, d, c, e)
     f.C0 = c
     f.C1 = e
     f.Parent = a
-[span_4](start_span)end[span_4](end_span)
+end
 
 local function findAtt(_, b)
     for _, obj in pairs(_:GetChildren()) do
@@ -29,7 +29,7 @@ local function findAtt(_, b)
             if res then return res end
         end
     end
-[span_5](start_span)end[span_5](end_span)
+end
 
 local function k(e, c)
     c.Parent = e
@@ -42,27 +42,27 @@ local function k(e, c)
         else
             local head = e:FindFirstChild("Head")
             if head then
-                _weld("HeadWeld", head, head, d, CFrame.new(0, 0, 0), c.AttachmentPoint)
+                _weld("HeadWeld", head, head, d, CFrame.new(0, 0.5, 0), c.AttachmentPoint)
             end
         end
     end
-[span_6](start_span)end[span_6](end_span)
+end
 
 task.spawn(function()
     while true do
         local char = p.Character
         if char and char:FindFirstChild("HumanoidRootPart") then
-            -- Проверка по уникальному имени, чтобы не спавнить копии
-            if not char:FindFirstChild("GribItem_" .. tostring(assetId)) then
+            local folderName = "GribItem_" .. tostring(assetId)
+            if not char:FindFirstChild(folderName) then
                 local success, model = pcall(function()
                     return game:GetObjects("rbxassetid://" .. assetId)[1]
                 end)
                 if success and model then
-                    model.Name = "GribItem_" .. tostring(assetId)
+                    model.Name = folderName
                     k(char, model)
                 end
             end
         end
-        [span_7](start_span)task.wait(2.5) -- Проверка каждые 2.5 секунды[span_7](end_span)
+        task.wait(2.9)
     end
 end)
